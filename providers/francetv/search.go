@@ -250,12 +250,12 @@ func (p *FranceTV) visitPageSerie(ctx context.Context, mr *matcher.MatchRequest,
 	isSeries := map[string]bool{}
 	shows := []*media.Media{}
 
-	parser.OnHTML("a.c-card-video", func(e *colly.HTMLElement) {
-		if strings.Contains(e.Attr("class"), "c-card-video--unavailable") {
+	parser.OnHTML("a.c-card-16x9", func(e *colly.HTMLElement) {
+		if e.ChildText("span.c-card-16x9__badge") == "indisponible" {
 			return
 		}
 
-		showTitle := e.ChildText("span.c-card-video__textarea-title")
+		showTitle := e.ChildText("span.c-card-16x9__title")
 		if !strings.Contains(strings.ToLower(showTitle), mr.Show) {
 			return
 		}
@@ -287,7 +287,7 @@ func (p *FranceTV) visitPageSerie(ctx context.Context, mr *matcher.MatchRequest,
 		if !mr.KeepBonus && info.IsBonus {
 			return
 		}
-		subtitle := e.ChildText("span.c-card-video__textarea-subtitle")
+		subtitle := e.ChildText("span.c-card-16x9__subtitle")
 		if match = reAnalyseTitle.FindStringSubmatch(subtitle); len(match) == 4 {
 			info.Season, _ = strconv.Atoi(match[1])
 			info.Episode, _ = strconv.Atoi(match[2])
@@ -299,7 +299,7 @@ func (p *FranceTV) visitPageSerie(ctx context.Context, mr *matcher.MatchRequest,
 			info.Title = subtitle
 		}
 
-		e.ForEach("span.c-metadata", func(n int, e *colly.HTMLElement) {
+		e.ForEach("span.c-card-16x9__metadata", func(n int, e *colly.HTMLElement) {
 			if match = reAired.FindStringSubmatch(e.Text); len(match) == 3 {
 				day, _ := strconv.Atoi(match[1])
 				month, _ := strconv.Atoi(match[2])
