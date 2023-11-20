@@ -13,7 +13,7 @@ import (
 
 	"github.com/simulot/aspiratv/metadata/nfo"
 	"github.com/simulot/aspiratv/parsers/mpdparser"
-	"github.com/simulot/aspiratv/parsers/ttml"
+	//"github.com/simulot/aspiratv/parsers/ttml"
 )
 
 type dashConfig struct {
@@ -100,7 +100,11 @@ func DASH(ctx context.Context, in, out string, info *nfo.MediaInfo, conf ...conf
 		go func(k int, it mpdparser.SegmentIterator) {
 			switch it.Content() {
 			case "text":
-				returnedErr = d.downloadSegments(ctx, segmentFileName[k], it, ttml.TrancodeToSRT)
+				//returnedErr = d.downloadSegments(ctx, segmentFileName[k], it, ttml.TrancodeToSRT)
+				returnedErr = d.downloadSegments(ctx, segmentFileName[k], it, straitCopy)
+				if returnedErr != nil {
+					d.conf.logger.Trace().Printf("[DASH] ERROR %w", returnedErr)
+				}
 			case "video":
 				returnedErr = d.downloadSegments(ctx, segmentFileName[k], d.progression(it), straitCopy)
 			default:
@@ -133,7 +137,7 @@ func DASH(ctx context.Context, in, out string, info *nfo.MediaInfo, conf ...conf
 		case "video":
 			params = append(params, "-map", fmt.Sprintf("%d:v", i))
 		case "text":
-			params = append(params, "-map", fmt.Sprintf("%d:s", i))
+			//params = append(params, "-map", fmt.Sprintf("%d:s", i))
 		}
 	}
 
@@ -158,7 +162,7 @@ func DASH(ctx context.Context, in, out string, info *nfo.MediaInfo, conf ...conf
 		case "audio":
 			params = append(params, fmt.Sprintf("-metadata:s:%d", i), fmt.Sprintf("language=%s", lang))
 		case "text":
-			params = append(params, fmt.Sprintf("-metadata:s:%d", i), fmt.Sprintf("language=%s", lang), fmt.Sprintf("-metadata:s:%d", i), fmt.Sprintf("title=Subtitles %s", lang))
+			//params = append(params, fmt.Sprintf("-metadata:s:%d", i), fmt.Sprintf("language=%s", lang), fmt.Sprintf("-metadata:s:%d", i), fmt.Sprintf("title=Subtitles %s", lang))
 		}
 	}
 
