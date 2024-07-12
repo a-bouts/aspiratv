@@ -139,8 +139,8 @@ func (p *FranceTV) getMediaURL(ctx context.Context, info *nfo.MediaInfo, videoID
 	}
 
 	// Get Token
-	if len(pl.Video.Token) > 0 {
-		tokenUrl := fmt.Sprintf("%s&url=%s", pl.Video.Token, pl.Video.URL)
+	if len(pl.Video.Token.Akamai) > 0 {
+		tokenUrl := fmt.Sprintf("%s&url=%s", pl.Video.Token.Akamai, pl.Video.URL)
 
 		p.config.Log.Debug().Printf("[%s] Player token for '%s' is %q ", p.Name(), info.Title, tokenUrl)
 		r2, err := client.Get(ctx, tokenUrl, nil, nil)

@@ -76,7 +76,9 @@ func (p *FranceTV) MediaList(ctx context.Context, mm []*matcher.MatchRequest) ch
 type player struct {
 	Video struct {
 		URL   string `json:"url"`
-		Token string `json:"token"`
+		Token struct {
+			Akamai string `json:"akamai"`
+		} `json:"token"`
 	} `json:video`
 	Meta struct {
 		ID              string    `json:"id"`
